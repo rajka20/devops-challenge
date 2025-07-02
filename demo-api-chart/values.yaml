@@ -1,0 +1,73 @@
+replicaCount: 1
+
+image:
+  repository: demo-api-service          # Your local or Docker Hub image name
+  pullPolicy: IfNotPresent
+  tag: "latest"                        # Set to your image tag
+
+imagePullSecrets: []
+
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: true
+  automount: true
+  annotations: {}
+  name: ""
+
+podAnnotations: {}
+podLabels: {}
+
+podSecurityContext: {}
+
+securityContext: {}
+
+service:
+  type: ClusterIP
+  port: 8080                          # Service exposes port 8080
+
+ingress:
+  enabled: false                      # Enable if you want ingress
+  className: ""
+  annotations: {}
+  hosts:
+    - host: demo-api.local            # Change to your domain/hostname
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
+
+resources: {}
+
+livenessProbe:
+  httpGet:
+    path: /metrics                    # Prometheus metrics endpoint for liveness
+    port: 8080
+  initialDelaySeconds: 15
+  periodSeconds: 20
+  failureThreshold: 3
+
+readinessProbe:
+  httpGet:
+    path: /api                       # API endpoint for readiness
+    port: 8080
+  initialDelaySeconds: 5
+  periodSeconds: 10
+  failureThreshold: 3
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+
+volumes: []
+volumeMounts: []
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
